@@ -1,0 +1,33 @@
+#include <xc.h>
+
+// CONFIGURATION BITS
+#pragma config FOSC = HS      // High-speed external oscillator
+#pragma config WDTEN = OFF
+#pragma config LVP = OFF
+
+#define _XTAL_FREQ 20000000   // 20MHz crystal
+
+#define LED LATCbits.LATC0
+#define TOUCH_SENSOR PORTCbits.RC2
+
+void init(void) {
+    ANSEL = 0x00;        // Disable analog on PORTA
+    ANSELH = 0x00;       // Disable analog on PORTB
+
+    TRISCbits.TRISC0 = 0;  // RC0 as output (LED)
+    TRISCbits.TRISC2 = 1;  // RC2 as input (Touch)
+
+    LATCbits.LATC0 = 0;    // LED off initially
+}
+
+void main(void) {
+    init();
+
+    while (1) {
+        if (TOUCH_SENSOR == 1) {
+            LED = 1;  // Turn ON LED when touched
+        } else {
+            LED = 0;  // OFF otherwise
+        }
+    }
+}
